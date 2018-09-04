@@ -1,3 +1,5 @@
+aws cloudformation create-stack --stack-name test-dynamoDB --template-body file://test-dynamoDB.json
+aws cloudformation wait stack-create-complete --stack-name test-dynamoDB
 aws cloudformation create-stack --stack-name test-lambda --template-body file://test-lambda.json
 aws cloudformation wait stack-create-complete --stack-name test-lambda
 

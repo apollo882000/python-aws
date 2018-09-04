@@ -29,6 +29,9 @@
 					"    data = obj.get()['Body'].read()",
 					"    # print (data)",
     
+					"    dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-1')",
+					"    table = dynamodb.Table('test-rawdata')",
+					
 					"    ## Parser JSON data",
 					"    loaded_json = json.loads(data)",
 					"    for x in loaded_json:",
@@ -41,6 +44,20 @@
 					"       print (\"volume:\",x['volume'])",
 					"       print (\"quoteVolume:\",x['quoteVolume'])",
 					"       print (\"weightedAverage:\",x['weightedAverage'])",
+					"       response = table.put_item(",
+					"       Item={",
+					"             'Date': str(x['date']),",
+					"             'high': str(x['high']),",
+					"             'low:': str(x['low']),",
+					"             'open': str(x['open']),",
+					"             'close': str(x['close']),",
+					"             'volume': str(x['volume']),",
+					"             'quoteVolume': str(x['quoteVolume']),",
+					"             'weightedAverage': str(x['weightedAverage'])",
+					"            }",
+					"       )",
+					"       print(\"PutItem succeeded:\")",
+					
 					"    print (\"Waiting for the file persist in the source bucket\")",
 					"    waiter = s3_client.get_waiter('object_exists')",
 					"    waiter.wait(Bucket=source_bucket, Key=key)",
@@ -54,7 +71,7 @@
        "FunctionName": "201809-test-lambda",
        "Handler": "index.parser_handler",
        "MemorySize": "128",
-       "Role": "arn:aws:iam::<aws account id>:role/aws-lambda-s3-execution-role",
+       "Role": "arn:aws:iam::<account id>:role/aws-lambda-s3-execution-role",
        "Runtime": "python3.6",
        "Timeout": 60
 		}
